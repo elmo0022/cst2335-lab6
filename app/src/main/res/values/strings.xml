@@ -2,13 +2,13 @@
     <string name="app_name">AndroidLabs</string>
 
     <!-- MainActivity -->
-    <string name="enter_name">Enter your name</string>
-    <string name="name_hint">Your name</string>
-    <string name="next">Next</string>
+    <string name="enter_name">Entrez votre nom</string>
+    <string name="name_hint">Votre nom</string>
+    <string name="next">Suivant</string>
 
     <!-- NameActivity -->
-    <string name="welcome">Welcome!</string>
-    <string name="welcome_name">Welcome %1$s!</string>
-    <string name="thank_you">Thank You</string>
-    <string name="dont_call_me">Don't call me that</string>
+    <string name="welcome">Bienvenue !</string>
+    <string name="welcome_name">Bienvenue %1$s !</string>
+    <string name="thank_you">Merci</string>
+    <string name="dont_call_me">Ne m’appelez pas comme ça</string>
 </resources>

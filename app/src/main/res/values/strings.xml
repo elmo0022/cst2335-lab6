@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">AndroidLabs</string>
+
+    <!-- MainActivity -->
     <string name="enter_name">Enter your name</string>
     <string name="name_hint">Your name</string>
     <string name="next">Next</string>
-    <string name="welcome">Welcome!</string> <!-- for later -->
+
+    <!-- NameActivity -->
+    <string name="welcome">Welcome!</string>
     <string name="welcome_name">Welcome %1$s!</string>
+    <string name="thank_you">Thank You</string>
+    <string name="dont_call_me">Don't call me that</string>
 </resources>

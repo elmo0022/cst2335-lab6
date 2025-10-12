@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AndroidLabs</string>
+    <string name="type_here">Tapez ici...</string>
+    <string name="urgent">Urgent</string>
+    <string name="add">AJOUTER</string>
+    <string name="delete_dialog_title">Voulez-vous supprimer ceci?</string>
+    <string name="delete_dialog_message">La ligne sélectionnée est: %d</string>
+    <string name="yes">OUI</string>
+    <string name="no">NON</string>
+    <string name="please_enter_text">Veuillez saisir du texte</string>
+    <string name="item_deleted">Élément supprimé</string>
+</resources>

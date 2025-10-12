@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:hint="Type here..."
+            android:hint="@string/type_here"
             android:padding="12dp" />
 
         <Switch
@@ -40,14 +40,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="Urgent"
+            android:text="@string/urgent"
             android:padding="8dp" />
 
         <Button
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ADD"
+            android:text="@string/add"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingTop="12dp"

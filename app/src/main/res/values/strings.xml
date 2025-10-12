@@ -1,14 +1,12 @@
 <resources>
     <string name="app_name">AndroidLabs</string>
-
-    <!-- MainActivity -->
-    <string name="enter_name">Entrez votre nom</string>
-    <string name="name_hint">Votre nom</string>
-    <string name="next">Suivant</string>
-
-    <!-- NameActivity -->
-    <string name="welcome">Bienvenue !</string>
-    <string name="welcome_name">Bienvenue %1$s !</string>
-    <string name="thank_you">Merci</string>
-    <string name="dont_call_me">Ne m’appelez pas comme ça</string>
+    <string name="type_here">Type here...</string>
+    <string name="urgent">Urgent</string>
+    <string name="add" translatable="false">ADD</string>
+    <string name="delete_dialog_title">Do you want to delete this?</string>
+    <string name="delete_dialog_message">The selected row is: %d</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="please_enter_text">Please enter some text</string>
+    <string name="item_deleted">Item deleted</string>
 </resources>

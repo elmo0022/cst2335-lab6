@@ -1,13 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AndroidLabs</string>
-    <string name="type_here">Tapez ici...</string>
-    <string name="urgent">Urgent</string>
-    <string name="add">AJOUTER</string>
-    <string name="delete_dialog_title">Voulez-vous supprimer ceci?</string>
-    <string name="delete_dialog_message">La ligne sélectionnée est: %d</string>
-    <string name="yes">OUI</string>
-    <string name="no">NON</string>
-    <string name="please_enter_text">Veuillez saisir du texte</string>
-    <string name="item_deleted">Élément supprimé</string>
+    <string name="task_hint">Tapez ici...</string>
+    <string name="add_button">AJOUTER</string>
+
+    <string name="delete_dialog_title">Supprimer la tâche</string>
+    <string name="delete_dialog_msg">Supprimer l\'élément à la position %d?</string>
+    <string name="delete">Supprimer</string>
+    <string name="cancel">Annuler</string>
+
+    <string name="error_empty_task">La tâche ne peut pas être vide</string>
+    <string name="added_ok">Tâche ajoutée</string>
+    <string name="add_failed">Échec de l\'ajout de la tâche</string>
+    <string name="deleted_ok">Tâche supprimée</string>
+    <string name="delete_failed">Échec de la suppression</string>
+
+    <!-- ADD THESE MISSING FRENCH STRINGS -->
+    <string name="urgent">URGENT</string>
+    <string name="normal">Normal</string>
+
+    <!-- CHANGE to 2 items (Bas/Urgent) to match your Lab 4 screenshot -->
+    <string-array name="urgency_options">
+        <item>Bas</item>
+        <item>Urgent</item>
+    </string-array>
 </resources>

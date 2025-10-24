@@ -1,12 +1,26 @@
 <resources>
     <string name="app_name">AndroidLabs</string>
-    <string name="type_here">Type here...</string>
-    <string name="urgent">Urgent</string>
-    <string name="add" translatable="false">ADD</string>
-    <string name="delete_dialog_title">Do you want to delete this?</string>
-    <string name="delete_dialog_message">The selected row is: %d</string>
-    <string name="yes">YES</string>
-    <string name="no">NO</string>
-    <string name="please_enter_text">Please enter some text</string>
-    <string name="item_deleted">Item deleted</string>
+    <string name="task_hint">Type here...</string>
+    <string name="add_button">ADD</string>
+
+    <string name="delete_dialog_title">Delete Todo</string>
+    <string name="delete_dialog_msg">Delete item at position %d?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="error_empty_task">Task cannot be empty</string>
+    <string name="added_ok">Todo added</string>
+    <string name="add_failed">Failed to add todo</string>
+    <string name="deleted_ok">Todo deleted</string>
+    <string name="delete_failed">Failed to delete</string>
+
+    <!-- ADD THESE MISSING STRINGS -->
+    <string name="urgent">URGENT</string>
+    <string name="normal">Normal</string>
+
+    <!-- CHANGE to 2 items (Low/Urgent) to match your Lab 4 screenshot -->
+    <string-array name="urgency_options">
+        <item>Low</item>
+        <item>Urgent</item>
+    </string-array>
 </resources>

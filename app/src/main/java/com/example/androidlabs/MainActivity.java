@@ -1,125 +1,164 @@
 package com.example.androidlabs;
 
-import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.*;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import java.util.ArrayList;
-import java.util.List;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * TV-style activity:
+ *  - Fullscreen ImageView
+ *  - Horizontal ProgressBar at bottom
+ *  - Background task (CatImages) that fetches/loads cat images on a loop
+ *
+ * Make sure AndroidManifest.xml includes:
+ * <uses-permission android:name="android.permission.INTERNET" />
+ */
 public class MainActivity extends AppCompatActivity {
-    private List<TodoItem> todoList;
-    private ListView listView;
-    private EditText editText;
-    private Switch urgentSwitch;
-    private Button addButton;
-    private TodoAdapter adapter;
+
+    private ImageView imageView;
+    private ProgressBar progressBar;
+    private static final String TAG = "CAT_LAB";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main); // layout with @id/imageView and @id/progressBar
 
-        // Initialize components
-        todoList = new ArrayList<>();
-        listView = findViewById(R.id.todoListView);
-        editText = findViewById(R.id.todoEditText);
-        urgentSwitch = findViewById(R.id.urgentSwitch);
-        addButton = findViewById(R.id.addButton);
+        imageView = findViewById(R.id.imageView);
+        progressBar = findViewById(R.id.progressBar);
 
-        // Setup adapter
-        adapter = new TodoAdapter();
-        listView.setAdapter(adapter);
+// show something immediately so the screen isn't black
+        imageView.setImageResource(android.R.drawable.ic_menu_report_image);
+        progressBar.setIndeterminate(true);
+        progressBar.setProgress(0);
+        new CatImages().execute();
 
-        // Add button click listener
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addTodoItem();
-            }
-        });
-
-        // Long click listener for deletion (CORRECTED PLACEMENT)
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showDeleteDialog(position);
-                return true;
-            }
-        });
     }
 
-    private void showDeleteDialog(final int position) {
-        new AlertDialog.Builder(this)
-                .setTitle("Do you want to delete this?")
-                .setMessage("The selected row is: " + position)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        todoList.remove(position);
-                        adapter.notifyDataSetChanged();
-                        Toast.makeText(MainActivity.this, "Item deleted", Toast.LENGTH_SHORT).show();
+    /**
+     * Downloads or loads cached cat images and updates the UI.
+     * - Gets JSON from https://cataas.com/cat?json=true
+     * - Uses "id" from JSON as local filename (id.png)
+     * - If file exists, load from disk; else download then save
+     * - Calls publishProgress to update ProgressBar and show image
+     */
+    private class CatImages extends AsyncTask<Void, Integer, Void> {
+        private Bitmap currentBitmap;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            while (!isCancelled()) {
+                try {
+                    // Try JSON first
+                    String json = null;
+                    try {
+                        URL jsonUrl = new URL("https://cataas.com/cat?json=true");
+                        HttpURLConnection jc = (HttpURLConnection) jsonUrl.openConnection();
+                        jc.setConnectTimeout(10000);
+                        jc.setReadTimeout(15000);
+                        jc.setRequestProperty("User-Agent", "AndroidTV-Lab/1.0");
+                        try (InputStream jis = new BufferedInputStream(jc.getInputStream())) {
+                            json = readFully(jis);
+                        }
+                    } catch (Exception e) {
+                        android.util.Log.e(TAG, "JSON fetch failed, will fallback to direct image", e);
                     }
-                })
-                .setNegativeButton("No", null)
-                .show();
-    }
 
-    private void addTodoItem() {
-        String text = editText.getText().toString().trim();
-        if (!text.isEmpty()) {
-            boolean isUrgent = urgentSwitch.isChecked();
-            todoList.add(new TodoItem(text, isUrgent));
-            adapter.notifyDataSetChanged();
-            editText.setText(""); // Clear input
-            urgentSwitch.setChecked(false); // Reset switch
-        } else {
-            Toast.makeText(this, "Please enter some text", Toast.LENGTH_SHORT).show();
-        }
-    }
+                    File imgFile;
+                    if (json != null) {
+                        org.json.JSONObject obj = new org.json.JSONObject(json);
+                        String id = obj.optString("id", "");
+                        String urlPath = obj.optString("url", "");
+                        String imgUrlStr = urlPath.startsWith("http") ? urlPath : ("https://cataas.com" + urlPath);
+                        if (id.isEmpty()) {
+                            int slash = imgUrlStr.lastIndexOf('/');
+                            id = (slash >= 0 ? imgUrlStr.substring(slash + 1) : "cat") + "_" + System.currentTimeMillis();
+                        }
+                        imgFile = new File(getFilesDir(), id + ".png");
 
-    // Custom Adapter
-    private class TodoAdapter extends BaseAdapter {
-        @Override
-        public int getCount() {
-            return todoList.size();
-        }
+                        if (!imgFile.exists()) {
+                            downloadToFile(imgUrlStr, imgFile);
+                        }
+                    } else {
+                        // Fallback: direct random image (no JSON)
+                        String fallbackUrl = "https://cataas.com/cat"; // returns an image
+                        String name = "fallback_" + System.currentTimeMillis();
+                        imgFile = new File(getFilesDir(), name + ".png");
+                        downloadToFile(fallbackUrl, imgFile);
+                    }
 
-        @Override
-        public Object getItem(int position) {
-            return todoList.get(position);
-        }
+                    currentBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    publishProgress(0); // show image
 
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.todo_item, parent, false);
+                    // Animate progress 0→100
+                    for (int p = 0; p <= 100 && !isCancelled(); p += 2) {
+                        publishProgress(p);
+                        Thread.sleep(30);
+                    }
+                } catch (Exception e) {
+                    android.util.Log.e(TAG, "Loop error", e);
+                    // keep UI alive
+                    for (int p = 0; p <= 100 && !isCancelled(); p += 5) {
+                        publishProgress(p);
+                        try { Thread.sleep(20); } catch (InterruptedException ignored) {}
+                    }
+                }
             }
+            return null;
+        }
 
-            TextView textView = convertView.findViewById(R.id.todoTextView);
-            TodoItem item = todoList.get(position);
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            int p = values[0];
+            if (progressBar.isIndeterminate()) progressBar.setIndeterminate(false);
+            if (p == 0 && currentBitmap != null) imageView.setImageBitmap(currentBitmap);
+            progressBar.setProgress(p);
+        }
 
-            // Set the text
-            textView.setText(item.getText());
 
-            // Set colors for urgent items
-            if (item.isUrgent()) {
-                convertView.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
-                textView.setTextColor(getResources().getColor(android.R.color.white));
-            } else {
-                convertView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-                textView.setTextColor(getResources().getColor(android.R.color.black));
-            }
+    }
 
-            return convertView;
+    // Helper: read an InputStream fully into a String (API 28+ compatible)
+    private static String readFully(InputStream is) throws java.io.IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buf = new byte[4096];
+        int n;
+        while ((n = is.read(buf)) != -1) {
+            baos.write(buf, 0, n);
+        }
+        return baos.toString(StandardCharsets.UTF_8.name());
+    }
+
+    private void downloadToFile(String urlStr, File out) throws Exception {
+        URL u = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection) u.openConnection();
+        conn.setConnectTimeout(15000);
+        conn.setReadTimeout(20000);
+        conn.setRequestProperty("User-Agent", "AndroidTV-Lab/1.0");
+        try (InputStream is = new BufferedInputStream(conn.getInputStream());
+             BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(out))) {
+            byte[] buf = new byte[8192];
+            int n;
+            while ((n = is.read(buf)) != -1) os.write(buf, 0, n);
         }
     }
+
 }

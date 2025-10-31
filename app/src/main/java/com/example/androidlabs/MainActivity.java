@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Class-level variables
     private ArrayList<JSONObject> people = new ArrayList<>();
     private PeopleAdapter listAdapter;
     private ListView listView;
@@ -29,42 +31,50 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main); // ListView in layout
 
         listView = findViewById(R.id.peopleListView);
+
         listAdapter = new PeopleAdapter();
         listView.setAdapter(listAdapter);
 
-        // Fetch SWAPI data
+        // Fetch data from SWAPI
         new FetchPeopleTask().execute();
 
-        // Handle clicks
+        // Click handling
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            JSONObject person = people.get(position);
+            try {
+                JSONObject person = people.get(position);
 
-            // Bundle data
-            Bundle data = new Bundle();
-            data.putString("name", person.optString("name"));
-            data.putString("height", person.optString("height"));
-            data.putString("mass", person.optString("mass"));
-            data.putString("hair_color", person.optString("hair_color"));
-            data.putString("skin_color", person.optString("skin_color"));
-            data.putString("birth_year", person.optString("birth_year"));
-            data.putString("gender", person.optString("gender"));
+                // Create bundle with all details
+                Bundle data = new Bundle();
+                data.putString("name", person.getString("name"));
+                data.putString("height", person.getString("height"));
+                data.putString("mass", person.getString("mass"));
+                data.putString("hair_color", person.getString("hair_color"));
+                data.putString("skin_color", person.getString("skin_color"));
+                data.putString("birth_year", person.getString("birth_year"));
+                data.putString("gender", person.getString("gender"));
 
-            View fragmentContainer = findViewById(R.id.detailContainer);
-            if (fragmentContainer != null) {
-                // Tablet → show fragment
-                DetailsFragment fragment = new DetailsFragment();
-                fragment.setArguments(data);
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.detailContainer, fragment)
-                        .commit();
-            } else {
-                // Phone → start DetailsActivity
-                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                intent.putExtras(data);
-                startActivity(intent);
+                // Check if tablet (detailContainer exists)
+                View fragmentContainer = findViewById(R.id.detailContainer);
+                if (fragmentContainer != null) {
+                    // Tablet → show fragment in place
+                    DetailsFragment fragment = new DetailsFragment();
+                    fragment.setArguments(data);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.detailContainer, fragment)
+                            .commit();
+                } else {
+                    // Phone → open EmptyActivity
+                    Intent intent = new Intent(MainActivity.this, EmptyActivity.class);
+                    intent.putExtras(data);
+                    startActivity(intent);
+
+                    }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -73,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
      * AsyncTask to fetch Star Wars people from SWAPI.
      */
     private class FetchPeopleTask extends AsyncTask<Void, Void, JSONArray> {
+
         @Override
         protected JSONArray doInBackground(Void... voids) {
             try {
@@ -103,24 +114,34 @@ public class MainActivity extends AppCompatActivity {
 
             people.clear();
             for (int i = 0; i < jsonArray.length(); i++) {
-                people.add(jsonArray.optJSONObject(i));
+                try {
+                    people.add(jsonArray.getJSONObject(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             listAdapter.notifyDataSetChanged();
         }
     }
 
     /**
-     * Adapter for showing character names.
+     * Custom adapter to show character names in ListView.
      */
     private class PeopleAdapter extends BaseAdapter {
         @Override
-        public int getCount() { return people.size(); }
+        public int getCount() {
+            return people.size();
+        }
 
         @Override
-        public Object getItem(int position) { return people.get(position); }
+        public Object getItem(int position) {
+            return people.get(position);
+        }
 
         @Override
-        public long getItemId(int position) { return position; }
+        public long getItemId(int position) {
+            return position;
+        }
 
         @Override
         public View getView(int position, View convertView, android.view.ViewGroup parent) {
@@ -128,9 +149,13 @@ public class MainActivity extends AppCompatActivity {
                 convertView = getLayoutInflater()
                         .inflate(android.R.layout.simple_list_item_1, parent, false);
             }
-            JSONObject person = people.get(position);
-            ((TextView) convertView.findViewById(android.R.id.text1))
-                    .setText(person.optString("name"));
+            try {
+                JSONObject person = people.get(position);
+                ((TextView) convertView.findViewById(android.R.id.text1))
+                        .setText(person.getString("name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return convertView;
         }
     }

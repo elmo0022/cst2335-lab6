@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.example.androidlabs.R;
+//start Lab 7 Fragment
 
 public class DetailsFragment extends Fragment {
     public DetailsFragment() { }

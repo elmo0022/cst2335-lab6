@@ -22,7 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-
+//Start Lab 7
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<JSONObject> people = new ArrayList<>();

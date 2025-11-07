@@ -5,7 +5,7 @@
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- TV capabilities -->
+    <!-- TV capabilities - Remove if not needed for Lab 8 -->
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
@@ -36,14 +36,15 @@
             </intent-filter>
         </activity>
 
-        <!-- Phone details activity -->
-
-        <activity android:name=".DetailsActivity" android:exported="true" />
-
-
+        <!-- Dad Joke Activity -->
         <activity
-            android:name=".EmptyActivity"
-            android:exported="false"/>
+            android:name=".DadJokeActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- Remove these old activities from Lab 7 -->
+        <!-- <activity android:name=".DetailsActivity" android:exported="true" /> -->
+        <!-- <activity android:name=".EmptyActivity" android:exported="false"/> -->
 
     </application>
 </manifest>

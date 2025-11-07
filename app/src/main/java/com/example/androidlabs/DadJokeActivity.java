@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +13,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity
+// Version with toolbar icons
+
+public class DadJokeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
@@ -21,19 +24,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_dad_joke);
 
         setupToolbar();
         setupNavigationDrawer();
+
+        TextView jokeText = findViewById(R.id.jokeText);
+        jokeText.setText("Why don't scientists trust atoms?\n\nBecause they make up everything!");
     }
 
     private void setupToolbar() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Force toolbar title for debugging
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Lab 8 - Main");
+            getSupportActionBar().setTitle("Dad Joke");
         }
     }
 
@@ -79,9 +84,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            Toast.makeText(this, "Already on Home", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
         } else if (id == R.id.nav_joke) {
-            startActivity(new Intent(this, com.example.androidlabs.DadJokeActivity.class));
+            Toast.makeText(this, "Already on Dad Joke", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_exit) {
             finishAffinity();
         }

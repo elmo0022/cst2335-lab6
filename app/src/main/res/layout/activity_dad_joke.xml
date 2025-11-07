@@ -18,13 +18,30 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:padding="16dp"
-            android:text="Welcome to Lab 8 - Main Activity"
-            android:textSize="20sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+            android:text="Dad Joke"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/jokeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="Why don't scientists trust atoms?\n\nBecause they make up everything!"
+                android:textSize="18sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

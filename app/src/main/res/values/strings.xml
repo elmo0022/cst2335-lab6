@@ -1,28 +1,5 @@
 <resources>
     <string name="app_name">AndroidLabs</string>
-    <string name="task_hint">Type here...</string>
-    <string name="add_button">ADD</string>
-
-    <string name="delete_dialog_title">Delete Todo</string>
-    <string name="delete_dialog_msg">Delete item at position %d?</string>
-    <string name="delete">Delete</string>
-    <string name="cancel">Cancel</string>
-
-    <string name="error_empty_task">Task cannot be empty</string>
-    <string name="added_ok">Todo added</string>
-    <string name="add_failed">Failed to add todo</string>
-    <string name="deleted_ok">Todo deleted</string>
-    <string name="delete_failed">Failed to delete</string>
-
-    <!-- ADD THESE MISSING STRINGS -->
-    <string name="urgent">URGENT</string>
-    <string name="normal">Normal</string>
-
-    <!-- CHANGE to 2 items (Low/Urgent) to match your Lab 4 screenshot -->
-    <string-array name="urgency_options">
-        <item>Low</item>
-        <item>Urgent</item>
-    </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_open">Open navigation drawer</string>
+    <string name="nav_close">Close navigation drawer</string>
 </resources>
